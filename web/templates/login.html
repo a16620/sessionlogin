@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="ko-kr">
+    <head>
+        <meta charset="utf-8">
+        <title>사용자</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="static/css/foundation.css">
+        <link rel="stylesheet" href="static/css/app.css">
+        <link rel="stylesheet" href="static/css/styles.css">
+        <script src="static/js/login.js"></script>
+        <script src="static/js/jquery.js"></script>
+        <script src="static/js/vendor/foundation.js"></script>
+    </head>
+    <body>
+        <div class="outer-login">
+            <div class="login-container">
+                <div>
+                    <p class="m-text">로그인</p>
+                    <form id="form-login" method="POST">
+                        <input type="text" id="form-data-id" name="id" placeholder="사용자명" autocapitalize="false">
+                        <input type="password" id="form-data-pw" name="pw" placeholder="암호">
+                        <button class="button" type="button" id="form-btn-submit">로그인</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            var tryLogin = false;
+            var id = document.getElementById("form-data-id");
+            var pw = document.getElementById("form-data-pw");
+            var form = document.getElementById("form-login");
+            const fnlogin = function() {
+                    if (tryLogin) {
+                        alert("이미 로그인중입니다.")
+                        return;
+                    }
+                    if (isValid(id.value) && isValid(pw.value)) {
+                        tryLogin = true;
+                        login(id.value, pw.value).then(function() {
+                            location.replace("/account");
+                        }, function(msg) {
+                            alert("입력된 정보와 일치하는 계정이 없습니다. 에러: "+msg);
+                            tryLogin = false;
+                        }).catch(function(request,status,error) {
+                            console.log(request.status+":"+request.responseText+":"+error);
+                            alert("오류 발생");
+                        });
+                    } else {
+                        alert("사용자명과 암호가 비정상적인 문자를 포함합니다.")
+                    }
+                };
+            $(document).ready(function() {
+                $("#form-btn-submit").on('click', fnlogin);
+                $('#form-data-pw').keydown(function(evt) {
+                    if (evt.which == 13) {
+                        fnlogin();
+                    }
+                });
+            });
+            
+        </script>
+    </body>
+</html>
